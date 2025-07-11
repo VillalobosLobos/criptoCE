@@ -1,8 +1,14 @@
 import utils.bashToy as bT
+import utils.ecdsa as ecdsa
 
-print("Ingrese cadena: ",end='')
-cadena = input()
+#Para hashear mensaje
+#digesto = bT.hashToy(cadena)
 
-digesto = bT.hashToy(cadena)
-print(digesto)
+P= [5,1,1]
+Q= [6,3,1]
+a= 2
+p= 17
+
+print(ecdsa.sumaPuntos(P, Q, a, p))
+
 
