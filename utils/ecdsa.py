@@ -32,3 +32,11 @@ def sumaPuntos(P, Q, a, p):
 	else:
 		return puntosDiferentes(P, Q, p)
 
+def multiplicarPuntos(k, P, a, p):
+	suma = P
+	for i in range(k-1):
+		suma = sumaPuntos(suma, P, a, p)
+	print(suma)
+	return 0
+
+	
