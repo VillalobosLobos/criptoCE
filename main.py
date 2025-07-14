@@ -4,17 +4,19 @@ import utils.ecdsa as ecdsa
 #Para hashear mensaje
 #digesto = bT.hashToy(cadena)
 
-P= [1,1,1]
-Q= [6,3,1]
-G= [476675671136392426, 5963031211007724569, 1]
-a= 1
-p= 18446744073709551629
+P = [476675671136392426, 5963031211007724569, 1]
+a = 1
+p = 18446744073709551629
 
-#print(ecdsa.sumaPuntos(P, Q, a, p))
+#print(f'doblado de puntos : {ecdsa.dobladoPuntos(P, P, a, p)}')
 
-print(ecdsa.multiplicarPuntos(1, G, a, p))
-print(ecdsa.multiplicarPuntos(2, G, a, p))
-print(ecdsa.multiplicarPuntos(3, G, a, p))
+for i in [1, 2, 3, 4, 5]:
+	print(f'{i}P = {ecdsa.multiplicarPuntos(i, P, a, p)}')
+
+for i in [100, 500, 1000, 5000, 10000]:
+	print(f'{i}P = {ecdsa.multiplicarPuntos(i, P, a, p)}')
+
+
 
 
 

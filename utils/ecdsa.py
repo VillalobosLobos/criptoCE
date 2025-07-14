@@ -7,6 +7,13 @@ def y(m, P, x3, p):
 	return y3
 
 def dobladoPuntos(P, Q, a, p):
+	#En caso de que Z sea Fi
+	if P[2] == 0:
+		return [0, 1, 0]
+	#Para y = 0
+	if P[1] == 0:
+		return [0, 1, 0]
+
 	salida = []
 	m = (((3 * pow(P[0], 2)) + a) * (pow(2 * P[1], -1, p))) % p
 	x3 = x(m, P, Q, p)
@@ -14,6 +21,13 @@ def dobladoPuntos(P, Q, a, p):
 	return salida
 
 def puntosDiferentes(P, Q, p):
+	#Si P es Fi, regresame Q
+	if P[2] == 0:
+		return Q
+	#si Q es Fi, regresame P
+	if Q[2] == 0:
+		return P
+
 	salida = []
 	m = ((Q[1] - P[1]) * (pow(Q[0] - P[0] ,-1 ,p))) % p
 	x3 = x(m, P, Q, p)
@@ -22,6 +36,13 @@ def puntosDiferentes(P, Q, p):
 
 #P = [x1,y1,z1] y Q = [x2,y2,z2]
 def sumaPuntos(P, Q, a, p):
+	#Para z=0
+	if P[2] == 0:
+		return Q
+	#Para y=0
+	if Q[2] == 0:
+		return P
+
 	#Cuando es Fi
 	if P[0] == Q[0] and P[1] != Q[1]:
 		return [0, 1, 0]
@@ -32,11 +53,26 @@ def sumaPuntos(P, Q, a, p):
 	else:
 		return puntosDiferentes(P, Q, p)
 
+#Usando el algoritmo double-and-add
 def multiplicarPuntos(k, P, a, p):
-	suma = P
-	for i in range(k-1):
-		suma = sumaPuntos(suma, P, a, p)
-	print(suma)
-	return 0
+	#Para nuestro Fi/ infinito
+	if k == 0:
+		return [0, 1, 0]
+	if k == 1:
+		return P
+	#Para valores negativos de k
+	if k < 0:
+		P_neg = [P[0], (-P[1]) %p, P[2]]
+		return multiplicarPuntos(-k, P_neg, a, p)
 
-	
+	resultado = [0, 1, 0]
+	base = P
+
+	while k > 0:
+		if k & 1: #Para el bit menos significativo
+			resultado = sumaPuntos(resultado, base, a, p)
+		base = dobladoPuntos(base, base, a, p)
+		k >>= 1 #Para dividir k entre 2 (binario)
+	return resultado
+
+
