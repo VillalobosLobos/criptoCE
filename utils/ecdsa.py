@@ -1,3 +1,6 @@
+import utils.bashToy as bT
+import secrets
+
 def x(m, P, Q,  p):
 	x3 = (pow(m, 2) - P[0] - Q[0]) % p
 	return x3
@@ -74,5 +77,28 @@ def multiplicarPuntos(k, P, a, p):
 		base = dobladoPuntos(base, base, a, p)
 		k >>= 1 #Para dividir k entre 2 (binario)
 	return resultado
+
+def escribirClavePrivada(d):
+	with open("data/claves/clavePrivada.txt", "w") as f:
+		f.write(f'{d}')
+
+def escribirClavePublica(Q):
+	with open("data/claves/clavePublica.txt", "w") as f:
+		f.write(f'{Q}\n')
+
+def generarClaveECDSA(G, a, p):
+	n = 18446744080022336321
+	#Clave privada
+	d = secrets.randbelow(n - 1) + 1
+	#Clave pública
+	Q = multiplicarPuntos(d, G, a, p)
+
+	escribirClavePrivada(d)
+	escribirClavePublica(Q)
+
+def firmarMensaje():
+	pass
+
+
 
 
