@@ -9,5 +9,7 @@ a = 1
 p = 18446744073709551629
 
 #ecdsa.generarClaveECDSA(P, a, p)
-ecdsa.firmarMensaje("Hola mundo", P, a, p)
+#ecdsa.firmarMensaje("Hola mundo", P, a, p)
+print(ecdsa.verificar("Hola mundo", P, a, p))
+
 

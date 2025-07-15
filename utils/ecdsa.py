@@ -86,10 +86,9 @@ def escribirClavePrivada(d):
 
 def escribirClavePublica(Q):
 	with open("data/claves/clavePublica.txt", "w") as f:
-		f.write(f'{Q}\n')
+		f.write(f'{Q[0]}\n{Q[1]}\n{Q[2]}')
 
 def generarClaveECDSA(G, a, p):
-	n = 18446744080022336321
 	#Clave privada
 	d = secrets.randbelow(n - 1) + 1
 	#Clave pública
@@ -102,6 +101,13 @@ def obtenerLlavePrivada():
 	with open('data/claves/clavePrivada.txt', 'r') as llavePrivada:
 		d = int(llavePrivada.read())
 	return d
+
+def obtenerLlavePublica():
+	with open('data/claves/clavePublica.txt', 'r') as contenido:
+		x = int(contenido.readline().strip())
+		y = int(contenido.readline().strip())
+		z = int(contenido.readline().strip())
+	return [x, y ,z]
 
 def obtenerKParaFirmar(G, a, p, z, d):
 	while True:
@@ -126,14 +132,33 @@ def guardarFirma(firma):
 
 def firmarMensaje(msj, G, a, p):
 	d = obtenerLlavePrivada()
-	n = 18446744080022336321
 	#Mensaje hasheado, de hexadecimal a entero
 	z = int(bT.hashToy(msj), 16)
 	#Para evitar valores de 0 en s o r, verificaremos
 	firmar = obtenerKParaFirmar(G, a, p, z, d)
 	guardarFirma(firmar)
 
-	
+def obtenerFirma():
+	with open('data/firmas/firma.txt', 'r') as contenido:
+		r = int(contenido.readline().strip())
+		s = int(contenido.readline().strip())
+	return [r,s]
+
+def verificar(msj, G, a, p):
+	firma = obtenerFirma()
+	Q = obtenerLlavePublica()
+	z = int(bT.hashToy(msj), 16)
+	w = pow(firma[1], -1, n)
+	u1 = (z * w) % n
+	u2 = (firma[0] * w) % n
+	uG = multiplicarPuntos(u1, G, a, p)
+	uQ = multiplicarPuntos(u2, Q, a, p)
+	P = sumaPuntos(uG, uQ, a, p)
+	r = P[0] % n
+	if r == firma[0]:
+		return 'Verificación válida'
+	else:
+		return 'Verificación no válida'
 
 
 
