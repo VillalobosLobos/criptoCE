@@ -96,8 +96,20 @@ def generarClaveECDSA(G, a, p):
 	escribirClavePrivada(d)
 	escribirClavePublica(Q)
 
-def firmarMensaje():
-	pass
+def firmarMensaje(msj, G, a, p):
+	llavePrivada = open('data/claves/clavePrivada.txt', 'r')
+	d = int(llavePrivada.read())
+	n = 18446744080022336321
+	#Mensaje hasheado, de hexadecimal a entero
+	z = int(bT.hashToy(msj), 16)
+	k = secrets.randbelow(n - 1) + 1
+	R = multiplicarPuntos(k, G, a, p)
+	r = R[0] % n
+	inversoK = pow(k , -1, n)
+	s = (inversoK * ( z + d * r)) % n
+	print(f'[{r}, {s}]')
+
+	
 
 
 
