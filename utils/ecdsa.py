@@ -1,6 +1,8 @@
 import utils.bashToy as bT
 import secrets
 
+n = 18446744080022336321
+
 def x(m, P, Q,  p):
 	x3 = (pow(m, 2) - P[0] - Q[0]) % p
 	return x3
@@ -96,18 +98,40 @@ def generarClaveECDSA(G, a, p):
 	escribirClavePrivada(d)
 	escribirClavePublica(Q)
 
+def obtenerLlavePrivada():
+	with open('data/claves/clavePrivada.txt', 'r') as llavePrivada:
+		d = int(llavePrivada.read())
+	return d
+
+def obtenerKParaFirmar(G, a, p, z, d):
+	while True:
+		k = secrets.randbelow(n - 1) + 1
+		R = multiplicarPuntos(k, G, a, p)
+		r = R[0] % n
+		if r == 0:
+			continue
+		try:
+			inversoK = pow(k , -1, n)
+		except ValueError:
+			continue
+		s = (inversoK * ( z + d * r)) % n
+		if s == 0:
+			continue
+		break
+	return [r,s]
+
+def guardarFirma(firma):
+	with open("data/firmas/firma.txt", "w") as f:
+		f.write(f'{firma[0]}\n{firma[1]}')
+
 def firmarMensaje(msj, G, a, p):
-	llavePrivada = open('data/claves/clavePrivada.txt', 'r')
-	d = int(llavePrivada.read())
+	d = obtenerLlavePrivada()
 	n = 18446744080022336321
 	#Mensaje hasheado, de hexadecimal a entero
 	z = int(bT.hashToy(msj), 16)
-	k = secrets.randbelow(n - 1) + 1
-	R = multiplicarPuntos(k, G, a, p)
-	r = R[0] % n
-	inversoK = pow(k , -1, n)
-	s = (inversoK * ( z + d * r)) % n
-	print(f'[{r}, {s}]')
+	#Para evitar valores de 0 en s o r, verificaremos
+	firmar = obtenerKParaFirmar(G, a, p, z, d)
+	guardarFirma(firmar)
 
 	
 
