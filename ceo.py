@@ -54,19 +54,19 @@ if __name__ == '__main__':
 	parserGenerarLlaves = subparser.add_parser('generar-claves-ecdsa', help='Generar llaves con ECDSA')
 
 	#Subcomando: Para generar clave RSA para un empleado
-	parserGenerarLlavesEmpleado = subparser.add_parser('generar-claves-rsa', help='Generar llaves con ECDSA')
+	parserGenerarLlavesEmpleado = subparser.add_parser('generar-claves-rsa', help='Generar llaves con ECDSA --nombre')
 	parserGenerarLlavesEmpleado.add_argument('--nombre', required=True, help="Nombre del empleado")
 
 	#Subcomando: firmar
-	parser_firmar = subparser.add_parser('firmar', help='Firmar un archivo con ECDSA')
+	parser_firmar = subparser.add_parser('firmar', help='Firmar un archivo con ECDSA --archivo')
 	parser_firmar.add_argument('--archivo', required=True, help="Ruta del archivo a firmar")
 
 	#Subcomando: cifrar documento
-	parser_cifrar = subparser.add_parser('cifrar-doc', help='Cifrar documento con AES-GCM')
+	parser_cifrar = subparser.add_parser('cifrar-doc', help='Cifrar documento con AES-GCM --archivo')
 	parser_cifrar.add_argument('--archivo', required=True, help="Ruta del archivo a cifrar")
 
 	#Subcomando: cifrar clave AES con RSA
-	parserCifrarClave = subparser.add_parser('cifrar-clave', help='Cifrar una clave AES con la clave pública de un empleado (RSA-OAEP)')
+	parserCifrarClave = subparser.add_parser('cifrar-clave', help='Cifrar una clave AES con la clave pública de un empleado (RSA-OAEP) --aes --pubkey')
 	parserCifrarClave.add_argument('--aes', required=True, help='Ruta a la clave AES en base64')
 	parserCifrarClave.add_argument('--pubkey', required=True, help='Ruta a la clave pública del empleado (base64)')
 

@@ -41,18 +41,18 @@ if __name__ == '__main__':
 	subparser = parser.add_subparsers(dest="accion", required=True)
 
 	#Subcomando: Para descifrar la clave AES con su clave privada RSA
-	parserClaveAES = subparser.add_parser('descifrar-clave', help='Obtiene la clave AES original')
+	parserClaveAES = subparser.add_parser('descifrar-clave', help='Obtiene la clave AES original --archivo --pubkey')
 	parserClaveAES.add_argument('--archivo', required=True, help="Clave cifrada con RSA")
 	parserClaveAES.add_argument('--pubkey', required=True, help="Llave privada del empleado")
 
 	#Subcomando: Para descifrar documento
-	parserDoc = subparser.add_parser('descifrar-doc', help='Descifra el documento cifrado en AES')
+	parserDoc = subparser.add_parser('descifrar-doc', help='Descifra el documento cifrado en AES --archivo --clave --none')
 	parserDoc.add_argument('--archivo', required=True, help="Ruta del archivo a descifrar")
 	parserDoc.add_argument('--clave', required=True, help="Ruta de la clave para descifrar")
 	parserDoc.add_argument('--none', required=True, help="Ruta del none para descifrar")
 
 	#Subcomando: Para verificar la firma
-	parserVerificar = subparser.add_parser('verificar', help='Verificar un documento')
+	parserVerificar = subparser.add_parser('verificar', help='Verificar un documento --archivo --firma')
 	parserVerificar.add_argument('--archivo', required=True, help="Ruta del archivo")
 	parserVerificar.add_argument('--firma', required=True, help="Ruta de la firma")
 
