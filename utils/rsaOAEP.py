@@ -5,7 +5,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives import hashes
 import base64
 
-def generarClavesRSA(bits=2048):
+def generarClavesRSA(nombre, bits=2048):
 	clavePrivada = rsa.generate_private_key(
 		public_exponent=65537,
 		key_size=bits
@@ -25,11 +25,14 @@ def generarClavesRSA(bits=2048):
 	)
 
 	#Guardamos los archivos
-	with open("data/claves/rsaPrivada.pem", "wb") as f:
+	with open(f"data/claves/{nombre}-rsaPrivada.pem", "wb") as f:
 		f.write(base64.b64encode(pemPriv))
 
-	with open("data/claves/rsaPublica.pem", "wb") as f:
+	with open(f"data/claves/{nombre}-rsaPublica.pem", "wb") as f:
 		f.write(base64.b64encode(pemPub))
+
+	print(f"🔑 Claves RSA-Pública generada correctamente : data/claves/{nombre}-rsaPublica.pem")
+	print(f"🔑 Claves RSA-Privada generada correctamente : data/claves/{nombre}-rsaPrivada.pem")
 
 def cifrarAESRSA(rutaLlavePublica, claveAES):
 	with open(rutaLlavePublica, "rb") as f:

@@ -1,5 +1,6 @@
 import utils.bashToy as bT
 import secrets
+import os
 
 n = 18446744080022336321
 
@@ -83,10 +84,12 @@ def multiplicarPuntos(k, P, a, p):
 def escribirClavePrivada(d):
 	with open("data/claves/clavePrivada.txt", "w") as f:
 		f.write(f'{d}')
+	print(f"🔑 clave privada generada en : data/claves/clavePrivada.txt")
 
 def escribirClavePublica(Q):
 	with open("data/claves/clavePublica.txt", "w") as f:
 		f.write(f'{Q[0]}\n{Q[1]}\n{Q[2]}')
+	print(f"🔑 clave pública generada en : data/claves/clavePublica.txt")
 
 def generarClaveECDSA(G, a, p):
 	#Clave privada
@@ -126,26 +129,29 @@ def obtenerKParaFirmar(G, a, p, z, d):
 		break
 	return [r,s]
 
-def guardarFirma(firma):
-	with open("data/firmas/firma.txt", "w") as f:
+def guardarFirma(firma, ruta):
+	nombreArchivo = os.path.basename(ruta)
+	nombre = os.path.splitext(nombreArchivo)[0]
+	with open(f"data/firmas/{nombre}-Firma.txt", "w") as f:
 		f.write(f'{firma[0]}\n{firma[1]}')
+	print(f'Firma guardada en : data/firmas/{nombre}-Firma.txt')
 
-def firmarMensaje(msj, G, a, p):
+def firmarMensaje(msj, G, a, p, ruta):
 	d = obtenerLlavePrivada()
 	#Mensaje hasheado, de hexadecimal a entero
 	z = int(bT.hashToy(msj), 16)
 	#Para evitar valores de 0 en s o r, verificaremos
 	firmar = obtenerKParaFirmar(G, a, p, z, d)
-	guardarFirma(firmar)
+	guardarFirma(firmar, ruta)
 
-def obtenerFirma():
-	with open('data/firmas/firma.txt', 'r') as contenido:
+def obtenerFirma(ruta):
+	with open(ruta, 'r') as contenido:
 		r = int(contenido.readline().strip())
 		s = int(contenido.readline().strip())
 	return [r,s]
 
-def verificar(msj, G, a, p):
-	firma = obtenerFirma()
+def verificar(msj, G, a, p, ruta):
+	firma = obtenerFirma(ruta)
 	Q = obtenerLlavePublica()
 	z = int(bT.hashToy(msj), 16)
 	w = pow(firma[1], -1, n)
@@ -156,9 +162,9 @@ def verificar(msj, G, a, p):
 	P = sumaPuntos(uG, uQ, a, p)
 	r = P[0] % n
 	if r == firma[0]:
-		return 'Verificación válida'
+		return '✅ Verificación válida'
 	else:
-		return 'Verificación no válida'
+		return '❌ Verificación no válida'
 
 
 
