@@ -138,8 +138,9 @@ def guardarFirma(firma, ruta):
 
 def firmarMensaje(msj, G, a, p, ruta):
 	d = obtenerLlavePrivada()
+	msjStr = msj.decode('utf-8', errors='ignore')
 	#Mensaje hasheado, de hexadecimal a entero
-	z = int(bT.hashToy(msj), 16)
+	z = int(bT.hashToy(msjStr), 16)
 	#Para evitar valores de 0 en s o r, verificaremos
 	firmar = obtenerKParaFirmar(G, a, p, z, d)
 	guardarFirma(firmar, ruta)
@@ -153,7 +154,8 @@ def obtenerFirma(ruta):
 def verificar(msj, G, a, p, ruta):
 	firma = obtenerFirma(ruta)
 	Q = obtenerLlavePublica()
-	z = int(bT.hashToy(msj), 16)
+	msjStr = msj.decode('utf-8', errors='ignore')
+	z = int(bT.hashToy(msjStr), 16)
 	w = pow(firma[1], -1, n)
 	u1 = (z * w) % n
 	u2 = (firma[0] * w) % n

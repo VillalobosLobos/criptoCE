@@ -17,7 +17,7 @@ def generarClavePublicaPrivada():
 	ecdsa.generarClaveECDSA(P, a, p)
 
 def firmar(archivo):
-	with open(archivo, 'r', encoding = 'utf-8') as f:
+	with open(archivo, 'rb') as f:
 		mensaje = f.read()
 	ecdsa.firmarMensaje(mensaje, P, a, p, archivo)
 	print(f"✅ Documento firmado correctamente: {archivo}")
@@ -25,10 +25,10 @@ def firmar(archivo):
 def cifrarDocumento(archivo):
 	cifrado, clave, nonce = gcm.cifrarAESGCM(archivo)
 	nombreArchivo = os.path.basename(archivo)
-	nombre = os.path.splitext(nombreArchivo)[0]
+	nombre, extension = os.path.splitext(nombreArchivo)
 
 	#Guardaremos en base 64 el cifrado, clave y el nonce
-	b64.guardarBase64(f'data/documentos/{nombre}-Cifrado.b64', cifrado)
+	b64.guardarBase64(f'data/documentos/{nombre}{extension}-Cifrado.b64', cifrado)
 	b64.guardarBase64(f'data/claves/{nombre}-ClaveAES.b64', clave)
 	b64.guardarBase64(f'data/claves/{nombre}-Nonce.b64', nonce)
 
@@ -51,10 +51,10 @@ if __name__ == '__main__':
 	subparser = parser.add_subparsers(dest="accion", required=True)
 
 	#Subcomando: Para generar clave pública y privada
-	parserGenerarLlaves = subparser.add_parser('generar-claves-ecdsa', help='Generar llaves con ECDSA')
+	parserGenerarLlaves = subparser.add_parser('generar-claves-ecdsa', help='Generar claves con ECDSA')
 
 	#Subcomando: Para generar clave RSA para un empleado
-	parserGenerarLlavesEmpleado = subparser.add_parser('generar-claves-rsa', help='Generar llaves con ECDSA --nombre')
+	parserGenerarLlavesEmpleado = subparser.add_parser('generar-claves-rsa', help='Generar claves con RSA  --nombre')
 	parserGenerarLlavesEmpleado.add_argument('--nombre', required=True, help="Nombre del empleado")
 
 	#Subcomando: firmar

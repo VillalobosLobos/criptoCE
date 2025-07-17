@@ -21,17 +21,18 @@ def descifrarClaveAES(rutaClave, rutaRSA):
 
 def descifrarDoc(rutaDoc, rutaClave, rutaNone):
 	nombreArchivo = os.path.basename(rutaDoc)
-	nombre, extension = os.path.splitext(nombreArchivo)
+	base = nombreArchivo.replace('-Cifrado.b64','')
+	nombre, extension = os.path.splitext(base)
 
 	rutaDoc = b64.leerBase64(rutaDoc)
 	rutaClave = b64.leerBase64(rutaClave)
 	rutaNone = b64.leerBase64(rutaNone)
 
-	gcm.descifrarAESGCM(rutaDoc, rutaClave, rutaNone, f'data/documentos/{nombre}-Descifrado.txt')
-	print(f'✅ Documento descifrado correctamente en : data/documentos/{nombre}-Descifrado.txt')
+	gcm.descifrarAESGCM(rutaDoc, rutaClave, rutaNone, f'data/documentos/{nombre}-Descifrado{extension}')
+	print(f'✅ Documento descifrado correctamente en : data/documentos/{nombre}-Descifrado{extension}')
 
 def verificarFirma(archivo, rutaFirma):
-	with open(archivo, 'r', encoding = 'utf-8') as f:
+	with open(archivo, 'rb') as f:
 		mensaje = f.read()
 	salida = ecdsa.verificar(mensaje, P, a, p, rutaFirma)
 	print(f'{salida}')
@@ -41,9 +42,9 @@ if __name__ == '__main__':
 	subparser = parser.add_subparsers(dest="accion", required=True)
 
 	#Subcomando: Para descifrar la clave AES con su clave privada RSA
-	parserClaveAES = subparser.add_parser('descifrar-clave', help='Obtiene la clave AES original --archivo --pubkey')
+	parserClaveAES = subparser.add_parser('descifrar-clave', help='Obtiene la clave AES original --archivo --privkey')
 	parserClaveAES.add_argument('--archivo', required=True, help="Clave cifrada con RSA")
-	parserClaveAES.add_argument('--pubkey', required=True, help="Llave privada del empleado")
+	parserClaveAES.add_argument('--privkey', required=True, help="Llave privada del empleado")
 
 	#Subcomando: Para descifrar documento
 	parserDoc = subparser.add_parser('descifrar-doc', help='Descifra el documento cifrado en AES --archivo --clave --none')
@@ -59,7 +60,7 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 
 	if args.accion == 'descifrar-clave':
-		descifrarClaveAES(args.archivo, args.pubkey)
+		descifrarClaveAES(args.archivo, args.privkey)
 	elif args.accion == 'descifrar-doc':
 		descifrarDoc(args.archivo, args.clave, args.none)
 	elif args.accion == 'verificar':
